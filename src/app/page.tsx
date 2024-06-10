@@ -9,6 +9,8 @@ function formatBytes(bytes: number): string {
   return `${size} ${sizes[i]}`;
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function Home() {
   const res = await fetch(`http://localhost:8080/`, { cache: "no-cache" });
 
