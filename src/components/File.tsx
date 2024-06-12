@@ -38,8 +38,28 @@ const File = ({ file, currentDir }: Props) => {
     push(files);
   };
 
+  const handleFile = async (file: string) => {
+    const res = await fetch(
+      `http://localhost:8080/download?file=${currentDir}/${file}`,
+    );
+
+    const blob = await res.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = file;
+
+    document.body.appendChild(a);
+
+    a.click();
+    a.remove();
+  };
+
   const handleOnClick = (file: SVFile) => {
     if (file.is_dir) handleDir(file.name);
+    else handleFile(file.name);
   };
 
   return (
