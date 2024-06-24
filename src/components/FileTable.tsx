@@ -3,6 +3,7 @@ import { FaFile, FaFolder } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 import path from "path";
+import { useState } from "react";
 
 interface Props {
   files: SVFile[];
@@ -21,7 +22,7 @@ const FileTable = ({ files }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const tableHeaders = ["Name", "Size", "Type"];
+  const tableHeaders = ["Name", "Size", "Type", "Action"];
 
   const dir = searchParams.get("dir") ?? "/";
 
@@ -32,25 +33,6 @@ const FileTable = ({ files }: Props) => {
       const url = path.join("?dir=", dir, file.name);
 
       router.push(url);
-    } else {
-      const fullFile = path.join(dir, file.name);
-
-      const res = await fetch(
-        `http://localhost:8080/download?file=${fullFile}`,
-      );
-
-      const blob = await res.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-
-      a.href = url;
-      a.download = fullFile;
-
-      document.body.appendChild(a);
-
-      a.click();
-      a.remove();
     }
   };
 
@@ -105,11 +87,58 @@ const FileTable = ({ files }: Props) => {
               </td>
               <td className="border p-2">{formatBytes(file.size)}</td>
               <td className="border p-2">{file.is_dir ? "Folder" : "File"}</td>
+              <td className="border">
+                {!file.is_dir && <FileDownloadBtn file={file} dir={dir} />}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+  );
+};
+
+const FileDownloadBtn = ({ file, dir }: { file: SVFile; dir: string }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFileDownload = async (file: SVFile) => {
+    if (isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      const fullFile = path.join(dir, file.name);
+
+      const res = await fetch(
+        `http://localhost:8080/download?file=${fullFile}`,
+      );
+
+      const blob = await res.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = fullFile;
+
+      document.body.appendChild(a);
+
+      a.click();
+      a.remove();
+    } catch (error) {
+      alert(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={() => handleFileDownload(file)}
+      className="p-2 bg-blue-400 rounded-lg flex justify-self-center"
+    >
+      {isLoading ? "Downloading..." : "Download"}
+    </button>
   );
 };
 
