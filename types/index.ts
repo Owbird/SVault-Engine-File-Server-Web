@@ -3,3 +3,9 @@ interface SVFile {
   is_dir: boolean;
   size: number;
 }
+
+interface Config {
+  server: {
+    name: string;
+  };
+}
