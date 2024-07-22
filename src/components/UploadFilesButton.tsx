@@ -92,7 +92,7 @@ const UploadFilesButton = ({ currentDir }: Props) => {
             <p className="text-blue-500">Drop the files here ...</p>
           ) : (
             <p className="text-gray-500">
-              Drag 'n' drop some files here, or click to select files
+              Drag &apos;n&apos; drop some files here, or click to select files
             </p>
           )}
         </div>
