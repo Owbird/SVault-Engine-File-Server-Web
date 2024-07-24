@@ -30,10 +30,10 @@ export default async function Home({ searchParams }: Props) {
       <div className="flex flex-col">
         <div className="flex justify-center gap-8">
           <h1 className="text-3xl font-bold mb-4 text-center">
-            {config.server.name}
+            {config.name}
           </h1>
 
-          {config.server.allow_uploads && (
+          {config.allow_uploads && (
             <UploadFilesButton currentDir={currentDir} />
           )}
         </div>

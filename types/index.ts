@@ -5,8 +5,6 @@ interface SVFile {
 }
 
 interface Config {
-  server: {
-    name: string;
-    allow_uploads: boolean
-  };
+  name: string;
+  allow_uploads: boolean;
 }
