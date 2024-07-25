@@ -6,5 +6,5 @@ interface SVFile {
 
 interface Config {
   name: string;
-  allow_uploads: boolean;
+  allowUploads: boolean;
 }

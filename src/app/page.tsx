@@ -33,7 +33,7 @@ export default async function Home({ searchParams }: Props) {
             {config.name}
           </h1>
 
-          {config.allow_uploads && (
+          {config.allowUploads && (
             <UploadFilesButton currentDir={currentDir} />
           )}
         </div>
