@@ -3,7 +3,7 @@ import { FaFile, FaFolder } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 import path from "path";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
 interface Props {
@@ -20,6 +20,8 @@ const formatBytes = (bytes: number): string => {
 };
 
 const FileTable = ({ files }: Props) => {
+  const [filteredFiles, setFilteredFiles] = useState(files);
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,9 +42,19 @@ const FileTable = ({ files }: Props) => {
   const handleBreadCrumbClick = (path: string) => {
     const newPath = `/${paths.slice(1, paths.indexOf(path) + 1).join("/")}`;
 
-    console.log({ newPath, paths, i: paths.indexOf(path) });
-
     router.push(`/?dir=${newPath}`);
+  };
+
+  const handleSearch = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    const { value } = target;
+
+    if (!value) return;
+
+    setFilteredFiles(
+      files.filter((file) =>
+        file.name.toLowerCase().includes(value.toLowerCase()),
+      ),
+    );
   };
 
   return (
@@ -62,6 +74,13 @@ const FileTable = ({ files }: Props) => {
             </div>
           ))}
       </div>
+
+      <input
+        className="p-4 mb-2 rounded-lg border border-orange-500"
+        placeholder="Search here..."
+        onChange={handleSearch}
+      />
+
       <table className="table-auto w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
@@ -73,7 +92,7 @@ const FileTable = ({ files }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {files.map((file) => (
+          {filteredFiles.map((file) => (
             <tr
               key={file.name}
               onDoubleClick={() => handleDoubleClick(file)}
