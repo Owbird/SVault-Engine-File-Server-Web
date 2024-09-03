@@ -4,6 +4,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 import path from "path";
 import { useState } from "react";
+import { Tooltip } from "react-tooltip";
 
 interface Props {
   files: SVFile[];
@@ -12,7 +13,7 @@ interface Props {
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const size = parseFloat((bytes / Math.pow(k, i)).toFixed(2));
   return `${size} ${sizes[i]}`;
@@ -46,6 +47,7 @@ const FileTable = ({ files }: Props) => {
 
   return (
     <div>
+      <Tooltip id="file-name-tooltip" />
       <div className="flex gap-2 mb-2">
         {dir !== "/" &&
           paths.map((path) => (
@@ -76,14 +78,19 @@ const FileTable = ({ files }: Props) => {
               key={file.name}
               onDoubleClick={() => handleDoubleClick(file)}
               className="hover:bg-teal-100"
+              data-tooltip-id="file-name-tooltip"
+              data-tooltip-content={file.name}
+              data-tooltip-place="top"
             >
-              <td className="border p-2 flex items-center gap-2">
-                {file.is_dir ? (
-                  <FaFolder size={30} className="text-yellow-300" />
-                ) : (
-                  <FaFile size={30} className="text-cyan-700" />
-                )}
-                {file.name}
+              <td className="border p-2 max-w-[200px]">
+                <div className="flex items-center">
+                  {file.is_dir ? (
+                    <FaFolder size={30} className="text-yellow-300" />
+                  ) : (
+                    <FaFile size={30} className="text-cyan-700" />
+                  )}
+                  <span className="ml-2 truncate">{file.name}</span>
+                </div>
               </td>
               <td className="border p-2">{formatBytes(file.size)}</td>
               <td className="border p-2">{file.is_dir ? "Folder" : "File"}</td>
