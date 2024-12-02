@@ -37,7 +37,7 @@ export default async function Home({ searchParams }: Props) {
             <UploadFilesButton currentDir={currentDir} />
           )}
         </div>
-        <FileTable files={files} />
+        <FileTable key={currentDir}  files={files} />
       </div>
     </main>
   );
