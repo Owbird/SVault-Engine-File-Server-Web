@@ -125,46 +125,13 @@ const FileTable = ({ files }: Props) => {
 };
 
 const FileDownloadBtn = ({ file, dir }: { file: SVFile; dir: string }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleFileDownload = async (file: SVFile) => {
-    if (isLoading) return;
-
-    try {
-      setIsLoading(true);
-
-      const fullFile = path.join(dir, file.name);
-
-      const res = await fetch(
-        `http://localhost:8080/download?file=${fullFile}`,
-      );
-
-      const blob = await res.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-
-      a.href = url;
-      a.download = fullFile;
-
-      document.body.appendChild(a);
-
-      a.click();
-      a.remove();
-    } catch (error) {
-      alert(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <button
-      onClick={() => handleFileDownload(file)}
+    <a
+      href={`http://localhost:8080/download?file=${path.join(dir, file.name)}`}
       className="p-2 bg-blue-400 rounded-lg flex justify-self-center"
     >
-      {isLoading ? "Downloading..." : "Download"}
-    </button>
+      Download
+    </a>
   );
 };
 
